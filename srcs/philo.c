@@ -6,51 +6,64 @@
 /*   By: motroian <motroian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/30 15:30:17 by motroian          #+#    #+#             */
-/*   Updated: 2023/04/06 17:28:15 by motroian         ###   ########.fr       */
+/*   Updated: 2023/04/09 19:32:28 by motroian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-
-long int	get_time(void *args)
+int	ft_eat(t_philo *philo)
 {
-	struct timeval	time;
-
-	gettimeofday(&time, NULL);
-	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+	print_msg(philo, "Take a fork");
+	pthread_mutex_lock(& philo->data->finish);
+	philo->data->finisheat = get_time(philo, 1);
+	pthread_mutex_unlock(& philo->data->finish);
+	print_msg(philo, "is eating");
+	return (0);
 }
 
-void	print_msg(t_philo *philo, char *msg)
+void	watcher(t_data *data)
 {
-	pthread_mutex_lock(philo->data->print);
-	printf("%d %d %s", get_time(), philo->name, msg);
-	pthread_mutex_unlock(philo->data->print);
-}
+	int		i;
+	long	time;
 
-void	check_death(void *args)
-{
-	return (args);
-}
-
-void	*routine(void *args)
-{
-	t_philo	philo;
-
-	philo = (t_philo*)philo;
 	while (1)
 	{
-		if (sleep);
-			ft_sleep(philo);
-		if (eating);
-			ft_eat(philo);
-		if (thinking);
-			print_msg(philo, "is thinking");
-		
+		i = -1;
+		while (++i <= data->nbphilo)
+		{
+			pthread_mutex_lock(& data->finish);
+			time = get_time(& data->philo[i], 1) - data->finisheat;
+			pthread_mutex_unlock(& data->finish);
+			if (time >= data->ttdie)
+			{
+				pthread_mutex_lock(& data->die);
+				data->dead = 1;
+				pthread_mutex_unlock(& data->die);
+				print_msg(data->philo, "died");
+				return ;
+			}
+		}
+		usleep(100);
 	}
-	return (args);
 }
 
+void	*routine(void *phil)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)phil;
+	while (1)
+	{
+		if (ft_sleep(philo))
+			break ;
+		if (ft_eat(philo))
+			break ;
+		if (print_msg(philo, "is thinking"))
+			break ;
+	}
+	return (NULL);
+}
 int	main (int	ac, char **av)
 {
 	t_data	data;

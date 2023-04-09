@@ -6,7 +6,7 @@
 /*   By: motroian <motroian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/30 15:32:21 by motroian          #+#    #+#             */
-/*   Updated: 2023/04/03 15:21:09 by motroian         ###   ########.fr       */
+/*   Updated: 2023/04/09 19:22:52 by motroian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,34 +31,39 @@ typedef struct s_data	t_data;
 
 typedef struct s_philo
 {
-	long long time;
-	int	name;
-	int	nbeat;
+	long long		time;
+	int				name;
+	int				nbeat;
 	pthread_mutex_t	mut;
 	pthread_mutex_t *left;
 	pthread_mutex_t *right;
 	pthread_t		create;
-	t_data		*data;
+	t_data			*data;
 }	t_philo;
 
 typedef struct s_data
 {
-	int		ttsleep;
-	int		tteat;
-	int		nbphilo;
-	int		ttdie;
-	int		nbeat;
-	int		finisheat;
-	int		dead;
+	int				ttsleep;
+	int				tteat;
+	int				nbphilo;
+	int				ttdie;
+	int				nbeat;
+	int				finisheat;
+	int				dead;
 	pthread_mutex_t die;
 	pthread_mutex_t *fork;
 	pthread_mutex_t print;
 	pthread_mutex_t finish;
-	t_philo *philo;
+	t_philo			*philo;
 }	t_data;
+
+long int	get_time(t_philo *philo, int c);
 
 void		parsing(t_data *data, char **av, int opt);
 long int	ft_atoi(char *str);
 void		*routine(void *args);
+int			print_msg(t_philo *philo, char *msg);
+int			ft_sleep(t_philo *philo);
+int			ft_eat(t_philo *philo);
 
 #endif
