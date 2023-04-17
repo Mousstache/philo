@@ -6,7 +6,7 @@
 /*   By: motroian <motroian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 16:02:06 by motroian          #+#    #+#             */
-/*   Updated: 2023/04/09 19:33:11 by motroian         ###   ########.fr       */
+/*   Updated: 2023/04/17 18:18:54 by motroian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,31 +52,30 @@ long int	ft_atoi(char *str)
 	}
 	return (c);
 }
-
 void	init_philo(t_data *data, t_philo *philo)
 {
 	int	i;
 
 	i = -1;
-	while (++i <= data->nbphilo)
+	while (++i < data->nbphilo)
 	{
 		philo[i].name = i;
 		philo[i].time = get_time(data->philo, 0);
-		philo[i].mut = pthread_mutex_init(& philo[i].mut, NULL);
-		philo[i].left = pthread_mutex_init(philo[i].left, NULL);
+		pthread_mutex_init(& philo[i].mut, NULL);
+		pthread_mutex_init(&philo[i].left, NULL);
+		pthread_mutex_init(&philo[i].finish, NULL);
+		pthread_mutex_init(&philo[i].die, NULL);
 		if (i == data->nbphilo - 1)
-			philo[i].right = pthread_mutex_init(philo[0].left, NULL);
-		philo[i].right = pthread_mutex_init(philo[i + 1].left, NULL);
+			philo[i].right = &philo[0].left;
+		philo[i].right = &philo[i + 1].left;
 	}
 }
 void	parsing(t_data *data, char **av, int opt)
 {
-	pthread_t *philo;
+	t_philo *philo;
 	int		i;
 
 	i = -1;
-	pthread_mutex_init(& data->die, NULL);
-	pthread_mutex_init(& data->finish, NULL);
 	pthread_mutex_init(& data->print, NULL);
 	data->nbphilo = ft_atoi(av[1]);
 	data->tteat = ft_atoi(av[3]);
@@ -84,12 +83,15 @@ void	parsing(t_data *data, char **av, int opt)
 	data->ttsleep = ft_atoi(av[4]);
 	if (opt)
 		data->nbeat = ft_atoi(av[5]);
-	philo = malloc(sizeof(t_philo *) * data->nbphilo);
+	philo = malloc(sizeof(t_philo) * data->nbphilo);
 	data->fork = malloc(sizeof(pthread_mutex_t) * data->nbphilo);
 	init_philo(data, philo);
-	while (++i <= data->nbphilo)
-		pthread_create(&philo[i], NULL, &routine, data);
+	// printf(">> parsing(): %p\n", data);
+	while (++i < data->nbphilo)
+		pthread_create(&philo[i].create, NULL, &routine, data);
+	watcher(data);
 	i = -1;
-	while (++i <= data->nbphilo)
-		pthread_join(philo[i], NULL);
+	while (++i < data->nbphilo)
+		pthread_join(philo[i].create, NULL);
+	free(philo);
 }
