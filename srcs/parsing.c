@@ -6,7 +6,7 @@
 /*   By: motroian <motroian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 16:02:06 by motroian          #+#    #+#             */
-/*   Updated: 2023/04/17 18:18:54 by motroian         ###   ########.fr       */
+/*   Updated: 2023/05/10 18:51:32 by motroian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,16 +58,22 @@ void	init_philo(t_data *data, t_philo *philo)
 
 	i = -1;
 	while (++i < data->nbphilo)
+		pthread_mutex_init(&data->fork[i], NULL);
+	i = -1;
+	while (++i < data->nbphilo)
 	{
 		philo[i].name = i;
-		philo[i].time = get_time(data->philo, 0);
-		pthread_mutex_init(& philo[i].mut, NULL);
-		pthread_mutex_init(&philo[i].left, NULL);
+		philo[i].finisheat = get_time();
+		philo[i].time = get_time();
+		philo[i].nb_eat = 0;
 		pthread_mutex_init(&philo[i].finish, NULL);
-		pthread_mutex_init(&philo[i].die, NULL);
+		pthread_mutex_init(&philo[i].nbeatlock, NULL);
 		if (i == data->nbphilo - 1)
-			philo[i].right = &philo[0].left;
-		philo[i].right = &philo[i + 1].left;
+			philo[i].right = &data ->fork[0];
+		else
+			philo[i].right = &data->fork[i + 1];
+		philo[i].left = &data->fork[i];
+		philo[i].data = data;
 	}
 }
 void	parsing(t_data *data, char **av, int opt)
@@ -77,20 +83,23 @@ void	parsing(t_data *data, char **av, int opt)
 
 	i = -1;
 	pthread_mutex_init(& data->print, NULL);
+	pthread_mutex_init(& data->die, NULL);
+	data->dead = 0;
 	data->nbphilo = ft_atoi(av[1]);
 	data->tteat = ft_atoi(av[3]);
 	data->ttdie = ft_atoi(av[2]);
 	data->ttsleep = ft_atoi(av[4]);
+	data->nbeat = -1;
 	if (opt)
 		data->nbeat = ft_atoi(av[5]);
 	philo = malloc(sizeof(t_philo) * data->nbphilo);
 	data->fork = malloc(sizeof(pthread_mutex_t) * data->nbphilo);
 	init_philo(data, philo);
-	// printf(">> parsing(): %p\n", data);
+	data->philo = philo;
 	while (++i < data->nbphilo)
-		pthread_create(&philo[i].create, NULL, &routine, data);
-	watcher(data);
+		pthread_create(&philo[i].create, NULL, &routine, & data->philo[i]);
 	i = -1;
+	watcher(data);
 	while (++i < data->nbphilo)
 		pthread_join(philo[i].create, NULL);
 	free(philo);

@@ -6,7 +6,7 @@
 /*   By: motroian <motroian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/30 15:32:21 by motroian          #+#    #+#             */
-/*   Updated: 2023/04/17 18:23:57 by motroian         ###   ########.fr       */
+/*   Updated: 2023/05/10 18:13:28 by motroian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,11 @@ typedef struct s_philo
 {
 	long long		time;
 	int				name;
-	int				nbeat;
+	int				nb_eat;
 	long long		finisheat;
-	int				dead;
-	pthread_mutex_t	mut;
-	pthread_mutex_t left;
+	pthread_mutex_t	nbeatlock;
+	pthread_mutex_t *left;
 	pthread_mutex_t finish;
-	pthread_mutex_t die;
 	pthread_mutex_t *right;
 	pthread_t		create;
 	t_data			*data;
@@ -52,12 +50,16 @@ typedef struct s_data
 	int				nbphilo;
 	int				ttdie;
 	int				nbeat;
+	int				dead;
+	int				finish;
 	pthread_mutex_t *fork;
 	pthread_mutex_t print;
+	pthread_mutex_t die;
 	t_philo			*philo;
 }	t_data;
 
-long int	get_time(t_philo *philo, int c);
+void		you_slip(long time);
+long int	get_time(void);
 void		parsing(t_data *data, char **av, int opt);
 long int	ft_atoi(char *str);
 void		*routine(void *args);
