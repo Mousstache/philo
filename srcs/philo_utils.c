@@ -6,7 +6,7 @@
 /*   By: motroian <motroian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/30 18:44:33 by motroian          #+#    #+#             */
-/*   Updated: 2023/05/11 16:41:31 by motroian         ###   ########.fr       */
+/*   Updated: 2023/05/12 17:33:27 by motroian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int	check_death(t_philo *philo)
 	pthread_mutex_unlock(&philo->data->die);
 	return (philo_got_put_in_a_pack);
 }
+
 int	print_msg(t_philo *philo, char *msg)
 {
 	pthread_mutex_lock(&philo->data->print);
@@ -33,6 +34,7 @@ int	print_msg(t_philo *philo, char *msg)
 	pthread_mutex_unlock(&philo->data->print);
 	return (0);
 }
+
 void	you_slip(long time)
 {
 	long	begin;
@@ -41,6 +43,7 @@ void	you_slip(long time)
 	while (get_time() - begin < time)
 		usleep(10);
 }
+
 long int	get_time(void)
 {
 	struct timeval	time;

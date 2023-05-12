@@ -6,7 +6,7 @@
 /*   By: motroian <motroian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/30 15:32:21 by motroian          #+#    #+#             */
-/*   Updated: 2023/05/10 18:13:28 by motroian         ###   ########.fr       */
+/*   Updated: 2023/05/12 17:34:14 by motroian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@
 # include <sys/time.h>
 # include <sys/types.h>
 
-
 typedef struct s_data	t_data;
 
 typedef struct s_philo
@@ -36,9 +35,9 @@ typedef struct s_philo
 	int				nb_eat;
 	long long		finisheat;
 	pthread_mutex_t	nbeatlock;
-	pthread_mutex_t *left;
-	pthread_mutex_t finish;
-	pthread_mutex_t *right;
+	pthread_mutex_t	*left;
+	pthread_mutex_t	finish;
+	pthread_mutex_t	*right;
 	pthread_t		create;
 	t_data			*data;
 }	t_philo;
@@ -52,13 +51,14 @@ typedef struct s_data
 	int				nbeat;
 	int				dead;
 	int				finish;
-	pthread_mutex_t *fork;
-	pthread_mutex_t print;
-	pthread_mutex_t die;
+	pthread_mutex_t	*fork;
+	pthread_mutex_t	print;
+	pthread_mutex_t	die;
 	t_philo			*philo;
 }	t_data;
 
 void		you_slip(long time);
+void		ft_dead(t_data *data, int i);
 long int	get_time(void);
 void		parsing(t_data *data, char **av, int opt);
 long int	ft_atoi(char *str);

@@ -6,14 +6,13 @@
 /*   By: motroian <motroian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 16:02:06 by motroian          #+#    #+#             */
-/*   Updated: 2023/05/10 18:51:32 by motroian         ###   ########.fr       */
+/*   Updated: 2023/05/12 17:40:15 by motroian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static
-void ft_error(int nb)
+void	ft_error(int nb)
 {
 	if (nb == 1)
 		write (2, "La string est nulle\n", 21);
@@ -21,7 +20,7 @@ void ft_error(int nb)
 		write (2, "Le nombre est negatif\n", 22);
 	if (nb == 3)
 		write (2, "Le nombre est trop grand\n", 25);
-	exit(1);
+	exit (1);
 }
 
 long int	ft_atoi(char *str)
@@ -33,7 +32,7 @@ long int	ft_atoi(char *str)
 	a = 0;
 	b = 1;
 	c = 0;
-	if(!str || !*str)
+	if (!str || !*str)
 		ft_error(1);
 	while ((str[a] >= 9 && str[a] <= 13) || (str[a] == 32))
 		a++;
@@ -52,6 +51,7 @@ long int	ft_atoi(char *str)
 	}
 	return (c);
 }
+
 void	init_philo(t_data *data, t_philo *philo)
 {
 	int	i;
@@ -76,10 +76,11 @@ void	init_philo(t_data *data, t_philo *philo)
 		philo[i].data = data;
 	}
 }
+
 void	parsing(t_data *data, char **av, int opt)
 {
-	t_philo *philo;
-	int		i;
+	t_philo		*philo;
+	int			i;
 
 	i = -1;
 	pthread_mutex_init(& data->print, NULL);
@@ -103,4 +104,15 @@ void	parsing(t_data *data, char **av, int opt)
 	while (++i < data->nbphilo)
 		pthread_join(philo[i].create, NULL);
 	free(philo);
+}
+
+void	ft_dead(t_data *data, int i)
+{
+	pthread_mutex_lock(& data->die);
+	data->dead = 1;
+	pthread_mutex_unlock(& data->die);
+	pthread_mutex_lock(&data->print);
+	printf("%lld %d Died\n", (get_time() - data->philo[i].time),
+		data->philo->name + 1);
+	pthread_mutex_unlock(&data->print);
 }
