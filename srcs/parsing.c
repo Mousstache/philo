@@ -6,7 +6,7 @@
 /*   By: motroian <motroian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 16:02:06 by motroian          #+#    #+#             */
-/*   Updated: 2023/05/12 17:40:15 by motroian         ###   ########.fr       */
+/*   Updated: 2023/05/15 18:32:38 by motroian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ void	init_philo(t_data *data, t_philo *philo)
 		philo[i].time = get_time();
 		philo[i].nb_eat = 0;
 		pthread_mutex_init(&philo[i].finish, NULL);
-		pthread_mutex_init(&philo[i].nbeatlock, NULL);
 		if (i == data->nbphilo - 1)
 			philo[i].right = &data ->fork[0];
 		else
@@ -85,12 +84,12 @@ void	parsing(t_data *data, char **av, int opt)
 	i = -1;
 	pthread_mutex_init(& data->print, NULL);
 	pthread_mutex_init(& data->die, NULL);
+	pthread_mutex_init(& data->nbeatlock, NULL);
 	data->dead = 0;
 	data->nbphilo = ft_atoi(av[1]);
 	data->tteat = ft_atoi(av[3]);
 	data->ttdie = ft_atoi(av[2]);
 	data->ttsleep = ft_atoi(av[4]);
-	data->nbeat = -1;
 	if (opt)
 		data->nbeat = ft_atoi(av[5]);
 	philo = malloc(sizeof(t_philo) * data->nbphilo);
@@ -104,15 +103,4 @@ void	parsing(t_data *data, char **av, int opt)
 	while (++i < data->nbphilo)
 		pthread_join(philo[i].create, NULL);
 	free(philo);
-}
-
-void	ft_dead(t_data *data, int i)
-{
-	pthread_mutex_lock(& data->die);
-	data->dead = 1;
-	pthread_mutex_unlock(& data->die);
-	pthread_mutex_lock(&data->print);
-	printf("%lld %d Died\n", (get_time() - data->philo[i].time),
-		data->philo->name + 1);
-	pthread_mutex_unlock(&data->print);
 }

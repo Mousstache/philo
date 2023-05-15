@@ -1,4 +1,4 @@
-SRCS = $(addprefix srcs/, philo.c parsing.c philo_utils.c)
+SRCS = $(addprefix srcs/, philo.c parsing.c philo_utils.c utils2.c)
 
 NAME = philo
 

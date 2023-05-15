@@ -6,7 +6,7 @@
 /*   By: motroian <motroian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/30 15:30:17 by motroian          #+#    #+#             */
-/*   Updated: 2023/05/12 17:39:18 by motroian         ###   ########.fr       */
+/*   Updated: 2023/05/15 18:35:55 by motroian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,19 @@ int	fork_eat(t_philo *philo)
 	{
 		pthread_mutex_lock(philo->left);
 		if (print_msg(philo, "Take a fork"))
-			return (pthread_mutex_unlock(philo->left), 1);
+			return (ft_unlock(philo, 1), 1);
 		pthread_mutex_lock(philo->right);
 		if (print_msg(philo, "Take a fork"))
-			return (pthread_mutex_unlock(philo->right), 1);
+			return (ft_unlock(philo, 2), 1);
 	}
 	else
 	{
 		pthread_mutex_lock(philo->right);
 		if (print_msg(philo, "Take a fork"))
-			return (pthread_mutex_unlock(philo->right), 1);
+			return (ft_unlock(philo, 0), 1);
 		pthread_mutex_lock(philo->left);
 		if (print_msg(philo, "Take a fork"))
-			return (pthread_mutex_unlock(philo->left), 1);
+			return (ft_unlock(philo, 2), 1);
 	}
 	return (0);
 }
@@ -43,16 +43,16 @@ int	ft_eat(t_philo *philo)
 	philo->finisheat = get_time();
 	pthread_mutex_unlock(& philo->finish);
 	if (print_msg(philo, "is eating"))
-		return (1);
+		return (ft_unlock(philo, 2), 1);
 	you_slip(philo->data->tteat);
 	philo->nb_eat++;
 	pthread_mutex_unlock(philo->left);
 	pthread_mutex_unlock(philo->right);
 	if (philo->nb_eat == philo->data->nbeat)
 	{
-		pthread_mutex_lock(&philo->nbeatlock);
+		pthread_mutex_lock(&philo->data->nbeatlock);
 		philo->data->finish++;
-		pthread_mutex_unlock(&philo->nbeatlock);
+		pthread_mutex_unlock(&philo->data->nbeatlock);
 		return (1);
 	}
 	return (0);
@@ -89,19 +89,18 @@ void	watcher(t_data *data)
 		i = -1;
 		while (++i < data->nbphilo)
 		{
-			pthread_mutex_lock(& data->philo->nbeatlock);
-			if (data->finish == data->nbeat)
-			{
-				data->dead = 1;
-				pthread_mutex_unlock(&data->philo->nbeatlock);
-				return ;
-			}
-			pthread_mutex_unlock(&data->philo->nbeatlock);
 			pthread_mutex_lock(& data->philo[i].finish);
 			time = get_time() - data->philo[i].finisheat;
 			pthread_mutex_unlock(& data->philo[i].finish);
 			if (time >= data->ttdie)
 				return (ft_dead(data, i));
+			pthread_mutex_lock(&data->nbeatlock);
+			if (data->finish == data->nbphilo)
+			{
+				pthread_mutex_unlock(&data->nbeatlock);
+				return ;
+			}
+			pthread_mutex_unlock(&data->nbeatlock);
 		}
 		usleep(100);
 	}
@@ -116,8 +115,22 @@ int	main(int ac, char **av)
 	if (ac != 5 && ac != 6)
 		return (0);
 	memset(&data, 0, sizeof(t_data));
+	if (ft_atoi(av[1]) == 1)
+	{
+		you_slip(data.ttdie * 1000);
+		printf("%ld %d Died\n", ft_atoi(av[2]), 1);
+		exit(1);
+	}
+	if (ft_digit(av) == 1)
+	{
+		printf("%d", ft_digit(av));
+		return (EXIT_FAILURE);
+	}
 	parsing(&data, av, (ac == 6));
 	while (++i < data.nbphilo)
 		pthread_mutex_destroy(data.philo[i].left);
+	pthread_mutex_destroy(&data.print);
+	pthread_mutex_destroy(&data.die);
+	pthread_mutex_destroy(&data.nbeatlock);
 	free(data.fork);
 }
