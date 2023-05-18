@@ -6,7 +6,7 @@
 /*   By: motroian <motroian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/30 15:32:21 by motroian          #+#    #+#             */
-/*   Updated: 2023/05/15 18:35:42 by motroian         ###   ########.fr       */
+/*   Updated: 2023/05/16 23:03:28 by motroian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ void		*routine(void *args);
 int			print_msg(t_philo *philo, char *msg);
 int			ft_sleep(t_philo *philo);
 int			ft_eat(t_philo *philo);
+void		ft_error(int nb);
 void		watcher(t_data *data);
 
 #endif

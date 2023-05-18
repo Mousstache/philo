@@ -6,7 +6,7 @@
 /*   By: motroian <motroian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 16:02:06 by motroian          #+#    #+#             */
-/*   Updated: 2023/05/15 18:32:38 by motroian         ###   ########.fr       */
+/*   Updated: 2023/05/16 23:02:10 by motroian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ void	ft_error(int nb)
 		write (2, "Le nombre est negatif\n", 22);
 	if (nb == 3)
 		write (2, "Le nombre est trop grand\n", 25);
+	if (nb == 4)
+		write (2, "met que des int chef\n", 22);
 	exit (1);
 }
 

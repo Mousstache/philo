@@ -6,7 +6,7 @@
 /*   By: motroian <motroian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/30 15:30:17 by motroian          #+#    #+#             */
-/*   Updated: 2023/05/15 18:35:55 by motroian         ###   ########.fr       */
+/*   Updated: 2023/05/16 23:02:29 by motroian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ int	fork_eat(t_philo *philo)
 	{
 		pthread_mutex_lock(philo->left);
 		if (print_msg(philo, "Take a fork"))
+			return (ft_unlock(philo, 1), 1);
+		if (philo->left == philo->right)
 			return (ft_unlock(philo, 1), 1);
 		pthread_mutex_lock(philo->right);
 		if (print_msg(philo, "Take a fork"))
@@ -114,18 +116,11 @@ int	main(int ac, char **av)
 	i = -1;
 	if (ac != 5 && ac != 6)
 		return (0);
+	if (ft_atoi(av[1]) <= 0)
+		ft_error (2);
 	memset(&data, 0, sizeof(t_data));
-	if (ft_atoi(av[1]) == 1)
-	{
-		you_slip(data.ttdie * 1000);
-		printf("%ld %d Died\n", ft_atoi(av[2]), 1);
-		exit(1);
-	}
 	if (ft_digit(av) == 1)
-	{
-		printf("%d", ft_digit(av));
-		return (EXIT_FAILURE);
-	}
+		ft_error(4);
 	parsing(&data, av, (ac == 6));
 	while (++i < data.nbphilo)
 		pthread_mutex_destroy(data.philo[i].left);
