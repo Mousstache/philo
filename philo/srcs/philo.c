@@ -6,7 +6,7 @@
 /*   By: motroian <motroian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/30 15:30:17 by motroian          #+#    #+#             */
-/*   Updated: 2023/05/16 23:02:29 by motroian         ###   ########.fr       */
+/*   Updated: 2023/05/18 19:38:36 by motroian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,7 @@ int	main(int ac, char **av)
 	parsing(&data, av, (ac == 6));
 	while (++i < data.nbphilo)
 		pthread_mutex_destroy(data.philo[i].left);
+	free(data.philo);
 	pthread_mutex_destroy(&data.print);
 	pthread_mutex_destroy(&data.die);
 	pthread_mutex_destroy(&data.nbeatlock);

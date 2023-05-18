@@ -6,7 +6,7 @@
 /*   By: motroian <motroian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 16:02:06 by motroian          #+#    #+#             */
-/*   Updated: 2023/05/16 23:02:10 by motroian         ###   ########.fr       */
+/*   Updated: 2023/05/18 19:38:21 by motroian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,5 +104,4 @@ void	parsing(t_data *data, char **av, int opt)
 	watcher(data);
 	while (++i < data->nbphilo)
 		pthread_join(philo[i].create, NULL);
-	free(philo);
 }
